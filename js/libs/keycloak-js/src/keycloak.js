@@ -16,6 +16,7 @@
  */
 import base64 from 'base64-js';
 import sha256 from 'js-sha256';
+import { environment } from "src/environments/environment";
 
 if (typeof Promise === 'undefined') {
     throw Error('Keycloak requires an environment that supports Promises. Make sure that you include the appropriate polyfill.');
@@ -1349,8 +1350,34 @@ function Keycloak (config) {
     function loadAdapter(type) {
         if (!type || type == 'default') {
             return {
-                login: function(options) {
-                    window.location.assign(kc.createLoginUrl(options));
+                login: function (options) {
+                    var redirectTo = kc.createLoginUrl(options);
+                    if (environment.client_idp_hint) {
+                        var params = '?domaine=' + window.location.hostname;
+                        var url = environment.baseUrl + '/' + environment.client_oidc + params;
+                        var req = new XMLHttpRequest();
+                        req.open('GET', url, true);
+                        req.setRequestHeader('Accept', 'application/json');
+
+                        req.onreadystatechange = function () {
+                            if (req.readyState == 4) {
+                                if (req.status == 200) {
+                                    var data = JSON.parse(req.responseText);
+                                    redirectTo = kc.createLoginUrl(options) + '&' +
+                                        environment.client_idp_alias + '=' +
+                                        data[environment.client_alias_column_name] + '&' +
+                                        environment.client_idp_name + '=' +
+                                        data[environment.client_name_column_name];
+                                }
+                                
+                                window.location.assign(redirectTo);
+                            }
+                        };
+                        req.send();
+                    } else {
+                        window.location.assign(redirectTo);
+                    }
+
                     return createPromise().promise;
                 },
 
