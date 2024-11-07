@@ -1,6 +1,6 @@
 {
-  "name": "rednucleus-keycloak-js",
-  "version": "21.1.2",
+  "name": "@rednucleus/keycloak-js",
+  "version": "21.1.4",
   "description": "A client-side JavaScript OpenID Connect library that can be used to secure web applications",
   "main": "./dist/keycloak.js",
   "module": "./dist/keycloak.mjs",
@@ -48,7 +48,8 @@
     "@rollup/plugin-terser": "^0.4.1",
     "@rollup/plugin-typescript": "^11.1.0",
     "es6-promise": "^4.2.8",
-    "rollup": "^3.20.4"
+    "rollup": "^3.20.4",
+    "wireit": "^0.14.9"
   },
   "dependencies": {
     "base64-js": "^1.5.1",

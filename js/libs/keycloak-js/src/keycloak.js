@@ -1368,6 +1368,11 @@ function Keycloak (config) {
                                         data[environment.client_alias_column_name] + '&' +
                                         environment.client_idp_name + '=' +
                                         data[environment.client_name_column_name];
+                                    if( data[environment.client_auto_redirect] && 
+                                        data[environment.client_auto_redirect] == 1 )
+                                    {
+                                        redirectTo += '&kc_idp_hint=' + data[environment.client_alias_column_name];
+                                    }
                                 }
                                 
                                 window.location.assign(redirectTo);
